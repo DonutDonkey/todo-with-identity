@@ -13,25 +13,8 @@ public class HomePage(Logger logger, HtmlService htmlRenderer) : IPage {
             return Results.Extensions.Html(content);
         });
 
-        grp.MapGet("/content1", async () => {
-            var content = await htmlRenderer.RenderTemplate("Testing/Content2.html", new {
-                Title = "Content"
-            });
-            
-            return Results.Extensions.Html(content);
-        });
-        
-        grp.MapGet("/content2", async () => {
-            var content = await htmlRenderer.RenderTemplate("Testing/Content2.html", new {
-                Title = "Content",
-                Person = new { Name = "Joe Mama", Age = 69 }
-            });
-            
-            return Results.Extensions.Html(content);
-        });
-
         grp.MapGet("/login", async () => {
-            var content = await htmlRenderer.RenderTemplate("Account/login.html", new { Title = "Login Page" });
+            var content = await htmlRenderer.RenderHtml("Account/login.html", new { Title = "Login Page" });
             return Results.Extensions.Html(content);
         });
 
@@ -42,5 +25,19 @@ public class HomePage(Logger logger, HtmlService htmlRenderer) : IPage {
             await Task.Delay(5000);
             return Results.Extensions.Html(content);
         }).DisableAntiforgery();
+
+        grp.MapGet("/register", async() =>
+            Results.Extensions.Html(await htmlRenderer.RenderHtml("Account/register.html", null))
+        );
+
+        grp.MapPost("/register", async () => {
+            var rsp = await TaskerCall.Resource("account").Post(new {});
+
+            return (rsp.IsSuccessStatusCode)
+                ? Results.Extensions.Html(await htmlRenderer.RenderHtml("register.html",
+                    new { Title = "Register", Message = $"Registration succesfull, an email confirmation have been sent"}))
+                : Results.Extensions.Html(await htmlRenderer.RenderHtml("register.html",
+                    new { Title = "Register", Message = $"Registration failed, please try again later"})); //TODO: add reason for fuckups
+        });
     }
 }
