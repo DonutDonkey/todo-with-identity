@@ -1,5 +1,5 @@
 ﻿namespace ToDo_with_Identity.App.Controllers;
 
-public class Logger {
-    public void Log(string msg) => Console.WriteLine($"{msg}");
+public class Logger : ILogger {
+    public void Log<T>(string msg) => Console.WriteLine($"{typeof(T).ToString()} : {msg}");
 }

@@ -12,7 +12,22 @@
 
     <link rel="stylesheet" href="/content/style/main.css" type="text/css">
 </head>
-<body>
+<body id="content">
+    <form hx-post="/Home/register" hx-swap="innerHTML" hx-target="#content" hx-indicator="#spinner">
+        <div class="container">
+            <img id="spinner" class="htmx-indicator" src="/content/img/spinner.svg">
 
+            <label for="username"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="username" required>
+
+            <label for="email"><b>Email</b></label>
+            <input type="text" placeholder="Enter Email" name="email" required>
+
+            <label for="password"><b>Password</b></label>
+            <input type="text" placeholder="Enter Password" name="password" required>
+
+            <button type="submit">Register</button>
+        </div>
+    </form>
 </body>
 </html>

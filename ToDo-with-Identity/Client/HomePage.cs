@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToDo_with_Identity.App.Controllers;
+using ToDo_with_Identity.App.Models;
 using ToDo_with_Identity.Client.Services;
 
 namespace ToDo_with_Identity.Client;
@@ -11,6 +12,15 @@ public class HomePage(Logger logger, HtmlService htmlRenderer) : IPage {
         grp.MapGet("/", async () => {
             var content = await htmlRenderer.RenderTemplate("home.html", new { Title = "Home", Model = new { RandomQuote = "Sunny day" } });
             return Results.Extensions.Html(content);
+        });
+
+        grp.MapGet("/identity", async () => {
+            // Modify to hold identity of an user
+            var rsp = await TaskerCall.Resource("account").Get<bool>();
+
+            return (rsp)
+                ? Results.Extensions.Html(await htmlRenderer.RenderHtml("navbar_identity.html", null))
+                : Results.Extensions.Html(await htmlRenderer.RenderHtml("navbar_no_identity.html", null));
         });
 
         grp.MapGet("/login", async () => {
@@ -30,14 +40,16 @@ public class HomePage(Logger logger, HtmlService htmlRenderer) : IPage {
             Results.Extensions.Html(await htmlRenderer.RenderHtml("Account/register.html", null))
         );
 
-        grp.MapPost("/register", async () => {
-            var rsp = await TaskerCall.Resource("account").Post(new {});
+        grp.MapPost("/register", async ([FromForm] string username, [FromForm] string email, [FromForm] string password) => {
+            var rsp = await TaskerCall
+                .Resource("account")
+                .Post(new AccountModel( Id: 0, Username: username, Email: email, Password: password ));
 
             return (rsp.IsSuccessStatusCode)
-                ? Results.Extensions.Html(await htmlRenderer.RenderHtml("register.html",
-                    new { Title = "Register", Message = $"Registration succesfull, an email confirmation have been sent"}))
-                : Results.Extensions.Html(await htmlRenderer.RenderHtml("register.html",
-                    new { Title = "Register", Message = $"Registration failed, please try again later"})); //TODO: add reason for fuckups
-        });
+                ? Results.Extensions.Html(await htmlRenderer.RenderHtml("Account/register_response.html",
+                    new { Message = $"Registration succesfull, an email confirmation have been sent" }))
+                : Results.Extensions.Html(await htmlRenderer.RenderHtml("Account/register_response.html",
+                    new { Message = $"Registration failed, please try again later" })); //TODO: add reason for fuckups
+        }).DisableAntiforgery();
     }
 }
