@@ -1,6 +1,6 @@
-﻿using System.Reflection;
+using System.Reflection;
 
-namespace ToDo_with_Identity.Client.Services;
+namespace Tasker.Client.Services;
 
 public class HtmlService {
     private string Img => Path.Combine(Directory.GetCurrentDirectory(), "Client", "Static", "img");

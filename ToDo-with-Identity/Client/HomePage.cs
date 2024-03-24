@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ToDo_with_Identity.App.Controllers;
-using ToDo_with_Identity.App.Models;
-using ToDo_with_Identity.Client.Services;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ToDo_with_Identity.Client;
+using Tasker.App.Models;
+using Tasker.App.Controllers;
+using Tasker.Client.Services;
+
+namespace Tasker.Client;
 
 public class HomePage(Logger logger, HtmlService htmlRenderer) : IPage {
     public void Register(IEndpointRouteBuilder app) => Map(app.MapGroup("/Home"));
@@ -42,8 +43,8 @@ public class HomePage(Logger logger, HtmlService htmlRenderer) : IPage {
 
         grp.MapPost("/register", async ([FromForm] string username, [FromForm] string email, [FromForm] string password) => {
             var rsp = await TaskerCall
-                .Resource("account")
-                .Post(new AccountModel( Id: 0, Username: username, Email: email, Password: password ));
+                .Resource("account/register")
+                .Post(new AccountRecord( Id: 0, Username: username, Email: email, Password: password ));
 
             return (rsp.IsSuccessStatusCode)
                 ? Results.Extensions.Html(await htmlRenderer.RenderHtml("Account/register_response.html",

@@ -1,4 +1,4 @@
-﻿namespace ToDo_with_Identity.Client;
+namespace Tasker.Client;
 
 public interface IPage {
     public void Register(IEndpointRouteBuilder app);

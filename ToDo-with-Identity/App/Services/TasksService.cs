@@ -1,6 +1,6 @@
-﻿using ToDo_with_Identity.App.Controllers;
+using Tasker.App.Controllers;
 
-namespace ToDo_with_Identity.App.Services;
+namespace Tasker.App.Services;
 
 public class TasksService(Logger logger) : IEndpoint {
     public void Register(IEndpointRouteBuilder app) => Map(app.MapGroup("task"));

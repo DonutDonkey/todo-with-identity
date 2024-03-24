@@ -1,7 +1,10 @@
-﻿using ToDo_with_Identity.App.Controllers;
-using ToDo_with_Identity.App.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace ToDo_with_Identity.App.Services;
+using Tasker.App.Models;
+using Tasker.App.DbContext;
+using Tasker.App.Controllers;
+
+namespace Tasker.App.Services;
 
 public class AccountService(Logger logger) : IEndpoint {
     public void Register(IEndpointRouteBuilder app) => Map(app.MapGroup("account"));
@@ -9,7 +12,9 @@ public class AccountService(Logger logger) : IEndpoint {
     private void Map(IEndpointRouteBuilder grp) {
         grp.MapGet("/", () => false);
 
-        grp.MapPost("/", (AccountModel account) => {
+        grp.MapPost("/register", async (AccountDb db, AccountRecord account) => {
+            var accs = await db.Accounts.ToListAsync();
+
             logger.Log<AccountService>("Creating Account");
             return false;
         });

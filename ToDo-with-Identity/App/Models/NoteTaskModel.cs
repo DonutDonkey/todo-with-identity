@@ -1,4 +1,4 @@
-namespace ToDo_with_Identity.App.Models;
+namespace Tasker.App.Models;
 
 public enum NoteTaskType { NoCategory, Daily, Monthly, Yearly }
 

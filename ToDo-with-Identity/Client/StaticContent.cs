@@ -1,6 +1,6 @@
-﻿using ToDo_with_Identity.Client.Services;
+using Tasker.Client.Services;
 
-namespace ToDo_with_Identity.Client;
+namespace Tasker.Client;
 
 public class StaticContent(HtmlService htmlRenderer) : IPage {
     public void Register(IEndpointRouteBuilder app) => Map(app.MapGroup("/content"));

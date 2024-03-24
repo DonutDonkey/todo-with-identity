@@ -1,7 +1,7 @@
-﻿using System.Text;
+using System.Text;
 using System.Net.Mime;
 
-namespace ToDo_with_Identity.Client;
+namespace Tasker.Client;
 
 public static partial class ResultExtensions {
     public static IResult Html(this IResultExtensions resultExtensions, string html) {

@@ -1,3 +1,3 @@
-﻿// Global using directives
+// Global using directives
 
-//global using ToDo_with_Identity.App;
+//global using TaskerApp;
