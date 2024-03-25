@@ -44,7 +44,7 @@ public static class TaskerConfigurator {
 
     public static IServiceCollection RegisterServiceEndpoints(this IServiceCollection services) {
         services.TryAddEnumerable(typeof(Program).Assembly.DefinedTypes
-            .Where(type => type is {IsAbstract: false, IsInterface: false} && type.IsAssignableTo(typeof(IEndpoint)))
+            .Where(type => type is { IsAbstract: false, IsInterface: false } && type.IsAssignableTo(typeof(IEndpoint)))
             .Select(type => ServiceDescriptor.Transient(typeof(IEndpoint), type))
             .ToArray());
 
@@ -111,6 +111,15 @@ public static class TaskerCall {
 
     public static async Task<T> Post<T>(this HttpClient http, object? obj) {
         var response = await http.PostAsJsonAsync(http.BaseAddress, obj ?? new {});
+
+        var content = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
+
+        return result;
+    }
+
+    public static async Task<T> Post<T>(this HttpClient http) {
+        var response = await http.PostAsJsonAsync(http.BaseAddress, new {});
 
         var content = await response.Content.ReadAsStringAsync();
         var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true});

@@ -15,11 +15,11 @@ public class HomePage(Logger logger, HtmlService htmlRenderer) : IPage {
             return Results.Extensions.Html(content);
         });
 
-        grp.MapGet("/identity", async () => {
-            // Modify to hold identity of an user
-            var rsp = await TaskerCall.Resource("account").Get<bool>();
-
-            return (rsp)
+        grp.MapGet("/identity", async (HttpContext context) => {
+            var rsp = await TaskerCall.Resource("account")
+                .Post<AccountRecord?>(context.Request.Cookies["TaskerAuthorization"]);
+            
+            return (rsp is not null)
                 ? Results.Extensions.Html(await htmlRenderer.RenderHtml("navbar_identity.html", null))
                 : Results.Extensions.Html(await htmlRenderer.RenderHtml("navbar_no_identity.html", null));
         });
@@ -44,13 +44,13 @@ public class HomePage(Logger logger, HtmlService htmlRenderer) : IPage {
         grp.MapPost("/register", async ([FromForm] string username, [FromForm] string email, [FromForm] string password) => {
             var rsp = await TaskerCall
                 .Resource("account/register")
-                .Post(new AccountRecord( Id: 0, Username: username, Email: email, Password: password ));
+                .Post(new AccountRecord(Username: username, Email: email, Password: password ));
 
             return (rsp.IsSuccessStatusCode)
                 ? Results.Extensions.Html(await htmlRenderer.RenderHtml("Account/register_response.html",
                     new { Message = $"Registration succesfull, an email confirmation have been sent" }))
                 : Results.Extensions.Html(await htmlRenderer.RenderHtml("Account/register_response.html",
-                    new { Message = $"Registration failed, please try again later" })); //TODO: add reason for fuckups
+                    new { Message = $"{ rsp.Content.ReadAsStringAsync().Result }" }));
         }).DisableAntiforgery();
     }
 }

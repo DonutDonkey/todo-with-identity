@@ -1,4 +1,11 @@
-﻿body {
+﻿img#logo {
+    width: 45px;
+    height: 45px;
+    filter: saturate(4000%) hue-rotate(0deg) brightness(100%) contrast(0%);
+    margin: 2px;
+}
+
+body {
     font-family: "Inter Var", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                  "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
                  "Segoe UI Symbol", "Noto ColorEmoji";

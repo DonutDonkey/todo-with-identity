@@ -11,12 +11,22 @@ public class AccountService(Logger logger) : IEndpoint {
 
     private void Map(IEndpointRouteBuilder grp) {
         grp.MapGet("/", () => false);
+        grp.MapGet("/accounts", async (AccountDb db) => await db.Accounts.ToListAsync());
+
+        grp.MapPost("/", async (AccountDb db, string? identity) =>
+            await db.Accounts.FirstOrDefaultAsync(acc => acc.Identity == identity)
+        );
 
         grp.MapPost("/register", async (AccountDb db, AccountRecord account) => {
-            var accs = await db.Accounts.ToListAsync();
+            logger.Log<AccountService>($"Adding account : {account}");
 
-            logger.Log<AccountService>("Creating Account");
-            return false;
+            if (await db.Accounts.FirstOrDefaultAsync(e => e.Email == account.Email) is not null)
+                return Results.Conflict("Account already exists");
+
+            await db.Accounts.AddAsync(account);
+            await db.SaveChangesAsync();
+
+            return Results.Created();
         });
     }
 }
